@@ -1,0 +1,10 @@
+<p style="color: green"><%= notice %></p>
+
+<%= render @preferred_email %>
+
+<div>
+  <%= link_to "Edit this preferred email", edit_preferred_email_path(@preferred_email) %> |
+  <%= link_to "Back to preferred emails", preferred_emails_path %>
+
+  <%= button_to "Destroy this preferred email", @preferred_email, method: :delete %>
+</div>

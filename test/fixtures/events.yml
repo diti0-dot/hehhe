@@ -1,0 +1,15 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  title: MyString
+  description: MyText
+  start_time: 2025-07-06 07:44:08
+  end_time: 2025-07-06 07:44:08
+  preferred_email: one
+
+two:
+  title: MyString
+  description: MyText
+  start_time: 2025-07-06 07:44:08
+  end_time: 2025-07-06 07:44:08
+  preferred_email: two

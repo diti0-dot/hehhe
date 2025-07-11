@@ -1,0 +1,33 @@
+<div id="container">
+  <div id="calendar">
+    <%= month_calendar(events: @events) do |date, events| %>
+      <div class="day">
+        <div class="date"><%= date.day %></div>
+        <div class="events">
+          <% events.each do |event| %>
+            <div class="event">
+              <%= link_to event.title, event_path(event) %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="to-do">
+    <div class="to-do-header">
+      <%= link_to "➕ Add Event", new_event_path, class: "add-event-btn" %>
+    </div>
+    <div class="to-do-events">
+      <% @events.each do |event| %>  <!-- FIXED: @events not 'events' -->
+        <div class="event">
+          <%= link_to event.title, event_path(event) %>
+          <%= event.description.truncate(27)%>
+       <%= link_to "edit", edit_event_path(event) %>
+<%= link_to "delete", event_path(event), method: :delete, data: { confirm: "Are you sure?" } %>
+
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

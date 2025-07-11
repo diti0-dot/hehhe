@@ -1,0 +1,12 @@
+<% content_for :title, "Editing preferred email" %>
+
+<h1>Editing preferred email</h1>
+
+<%= render "form", preferred_email: @preferred_email %>
+
+<br>
+
+<div>
+  <%= link_to "Show this preferred email", @preferred_email %> |
+  <%= link_to "Back to preferred emails", preferred_emails_path %>
+</div>

@@ -1,0 +1,17 @@
+<p style="color: green"><%= notice %></p>
+
+<% content_for :title, "Preferred emails" %>
+
+<h1>Preferred emails</h1>
+
+<div id="preferred_emails">
+  <% @preferred_emails.each do |preferred_email| %>
+    <%= render preferred_email %>
+    <p>
+      <%= link_to "Show this preferred email", preferred_email %>
+    </p>
+  <% end %>
+</div>
+
+<%= link_to "New preferred email", new_preferred_email_path %>
+
