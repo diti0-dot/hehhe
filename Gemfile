@@ -75,5 +75,5 @@ gem "simple_calendar", "~> 3.1"
 
 gem "httparty", "~> 0.23.1"
 
-gem "openai", "~> 0.11.0"
+gem "openai", "~> 0.15.0"
 gem 'google-api-client'
