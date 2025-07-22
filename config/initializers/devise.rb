@@ -274,7 +274,8 @@ Devise.setup do |config|
    config.omniauth :google_oauth2,ENV['GOOGLE_CLIENT_ID'],ENV['GOOGLE_CLIENT_SECRET'],
    {access_type: 'offline',
     prompt: 'consent',
-    scope: "email profile https://www.googleapis.com/auth/gmail.readonly https://www.googleapis.com/auth/gmail.metadata"
+    include_granted_scopes: false,
+    scope: "email profile https://www.googleapis.com/auth/gmail.readonly"
   }
 
   # ==> Warden configuration

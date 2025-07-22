@@ -6,5 +6,6 @@ Rails.application.routes.draw do
   }
   resources :events
   resources :preferred_emails
+  post '/webhooks/gmail_notification', to: 'webhooks#gmail_notification'
   root 'events#index'
 end

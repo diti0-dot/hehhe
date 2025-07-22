@@ -24,7 +24,7 @@ class PreferredEmailsController < ApplicationController
   # POST /preferred_emails or /preferred_emails.json
   def create
     @preferred_email = PreferredEmail.new(preferred_email_params)
-
+     @preferred_email.user = current_user
     respond_to do |format|
       if @preferred_email.save
         format.html { redirect_to @preferred_email, notice: "Preferred email was successfully created." }
