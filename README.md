@@ -29,7 +29,7 @@ So I built Clask:
 - **Google Gmail API** — To fetch and track new emails from selected senders
 - **Google Pub/Sub** — To receive push notifications for new incoming emails
 - **OpenRouter.ai API** — To analyze email content using AI and decide if it contains assignment/test info
-- **ActiveJob + Sidekiq** — To run background jobs like fetching email history or parsing messages
+- **ActiveJob** — To run background jobs like fetching email history or parsing messages
 - **Simple Calendar** — For the calendar UI that shows all upcoming tasks neatly by date
 
 ### Flow
