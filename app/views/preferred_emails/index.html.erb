@@ -1,17 +1,27 @@
-<p style="color: green"><%= notice %></p>
+<div class="mb-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Preferred Emails</h2>
+  </div>
 
-<% content_for :title, "Preferred emails" %>
+  <div class="mb-3">
+    <%= turbo_frame_tag "preferred_email_form" do %>
+      <%= link_to "Add New Email", new_preferred_email_path, 
+                  data: { turbo_frame: "preferred_email_form" }, 
+                  class: "btn btn-primary" %>
+    <% end %>
+  </div>
+</div>
 
-<h1>Preferred emails</h1>
-
-<div id="preferred_emails">
-  <% @preferred_emails.each do |preferred_email| %>
-    <%= render preferred_email %>
-    <p>
-      <%= link_to "Show this preferred email", preferred_email %>
-    </p>
+<div class="mb-4">
+  <%= turbo_frame_tag "preferred_email_form" do %>
+    <%# Form will appear here when "Add New Email" is clicked %>
   <% end %>
 </div>
 
-<%= link_to "New preferred email", new_preferred_email_path %>
-
+<div id="preferred_emails_list" class="d-flex flex-wrap gap-3">
+  <% @preferred_emails.each do |preferred_email| %>
+    <%= turbo_frame_tag preferred_email do %>
+      <%= render partial: "preferred_email", locals: { preferred_email: preferred_email } %>
+    <% end %>
+  <% end %>
+</div>

@@ -7,6 +7,7 @@ class User < ApplicationRecord
   has_many :preferred_emails
   has_many :professor_events, through: :preferred_emails, source: :events
   has_many :personal_events, -> { where(preferred_email: nil) }, class_name: 'Event'
+has_many :events
 
   # Combine all events from professors and personal
   def all_events

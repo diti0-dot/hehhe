@@ -1,12 +1,17 @@
 class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
   def google_oauth2
-  user = User.from_omniauth(request.env["omniauth.auth"])
-  
-  if user.nil?
-    redirect_to new_user_registration_path, alert: "Error: Please try connecting your Gmail again"
-  else
-    sign_in(user)
-    redirect_to root_path, notice: "Successfully signed in!"
+    @user = User.from_omniauth(request.env["omniauth.auth"])
+    
+    if @user.persisted?
+      sign_in_and_redirect @user, event: :authentication
+      set_flash_message(:notice, :success, kind: "Google") if is_navigational_format?
+    else
+      session["devise.google_data"] = request.env["omniauth.auth"].except("extra")
+      redirect_to new_user_registration_url, alert: @user.errors.full_messages.join("\n")
+    end
   end
-end
+
+  def failure
+    redirect_to root_path
+  end
 end

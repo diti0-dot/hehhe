@@ -1,32 +1,15 @@
-<%= form_with(model: preferred_email) do |form| %>
-  <% if preferred_email.errors.any? %>
-    <div style="color: red">
-      <h2><%= pluralize(preferred_email.errors.count, "error") %> prohibited this preferred_email from being saved:</h2>
-
-      <ul>
-        <% preferred_email.errors.each do |error| %>
-          <li><%= error.full_message %></li>
-        <% end %>
-      </ul>
+<%= turbo_frame_tag "preferred_email_form" do %>
+  <%= form_with(model: preferred_email, local: false) do |form| %>
+    <div class="mb-3">
+      <%= form.label :subject, class: "form-label" %>
+      <%= form.text_field :subject, class: "form-control" %>
     </div>
+
+    <div class="mb-3">
+      <%= form.label :email, class: "form-label" %>
+      <%= form.email_field :email, class: "form-control" %>
+    </div>
+
+    <%= form.submit preferred_email.new_record? ? "Create Email" : "Update Email", class: "btn btn-primary" %>
   <% end %>
-
-  <div>
-    <%= form.label :email, style: "display: block" %>
-    <%= form.text_field :email %>
-  </div>
-
-  <div>
-    <%= form.label :subject, style: "display: block" %>
-    <%= form.text_field :subject %>
-  </div>
-
-  <div>
-    <%= form.label :user_id, style: "display: block" %>
-    <%= form.text_field :user_id %>
-  </div>
-
-  <div>
-    <%= form.submit %>
-  </div>
 <% end %>

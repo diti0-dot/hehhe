@@ -1,0 +1,26 @@
+<%= turbo_frame_tag dom_id(event) do %>
+  <div class="list-group-item p-3" id="<%= dom_id(event) %>">
+    <div class="d-flex justify-content-between align-items-start mb-2">
+      <h6 class="mb-0">
+        <%= link_to event.title, event_path(event), class: "text-decoration-none text-dark" %>
+      </h6>
+      <div class="btn-group btn-group-sm">
+        <%= link_to edit_event_path(event), data: { turbo_frame: "event_form" }, class: "btn btn-outline-secondary" do %>
+          <i class="bi bi-pencil"></i>
+        <% end %>
+        <%= button_to event_path(event), method: :delete, 
+              data: { confirm: "Are you sure?" }, class: "btn btn-outline-danger btn-sm" do %>
+          <i class="bi bi-trash"></i>
+        <% end %>
+      </div>
+    </div>
+    <p class="text-muted small mb-0">
+      <%= event.description.truncate(50) %>
+    </p>
+    <% if event.start_time.present? %>
+      <small class="text-muted d-block mt-2">
+        <i class="bi bi-calendar-event"></i> <%= event.start_time.to_formatted_s(:short) %>
+      </small>
+    <% end %>
+  </div>
+<% end %>

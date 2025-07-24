@@ -1,33 +1,43 @@
-<nav class="navbar">
-  <div class="navbar-container">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container-fluid">
     <%= link_to "Clask", root_path, class: "navbar-brand" %>
 
-    <div class="navbar-links">
-      <ul class="nav-menu">
-        <li><%= link_to "Calendar", root_path, class: "nav-link" %></li>
-        <li><%= link_to "Courses", preferred_emails_path, class: "nav-link" %></li>
-        <li><%= link_to "Assignments", root_path, class: "nav-link" %></li>
-        <li><%= link_to "Tests", root_path, class: "nav-link" %></li>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <%= link_to "Calendar", root_path, class: "nav-link" %>
+        </li>
+        <li class="nav-item">
+          <%= link_to "Courses", preferred_emails_path, class: "nav-link" %>
+        </li>
       </ul>
 
-      <div class="nav-user-dropdown">
+      <div class="d-flex">
         <% if user_signed_in? %>
           <div class="dropdown">
-            <button class="dropdown-toggle"><%= current_user.email %></button>
-            <div class="dropdown-menu">
-              <%= link_to "Profile", root_path, class: "dropdown-item" %>
-              <%= link_to "Settings", root_path, class: "dropdown-item" %>
-              <div class="dropdown-divider"></div>
-              <%= button_to "Sign Out", destroy_user_session_path, method: :delete, class: "dropdown-item" %>
-            </div>
+            <button class="btn btn-outline-light dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+              <%= current_user.email %>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark" aria-labelledby="dropdownMenuButton1">
+              <li><%= link_to "Profile", root_path, class: "dropdown-item" %></li>
+              <li><%= link_to "Settings", root_path, class: "dropdown-item" %></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><%= button_to "Sign Out", destroy_user_session_path, method: :delete, class: "dropdown-item" %></li>
+            </ul>
           </div>
         <% else %>
           <div class="dropdown">
-            <button class="dropdown-toggle">Account</button>
-            <div class="dropdown-menu">
-              <%= link_to "Sign In", new_user_session_path, class: "dropdown-item" %>
-              <%= link_to "Sign Up", new_user_registration_path, class: "dropdown-item" %>
-            </div>
+            <button class="btn btn-outline-light dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+              Account
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark" aria-labelledby="dropdownMenuButton1">
+              <li><%= link_to "Sign In", new_user_session_path, class: "dropdown-item" %></li>
+              <li><%= link_to "Sign Up", new_user_registration_path, class: "dropdown-item" %></li>
+            </ul>
           </div>
         <% end %>
       </div>

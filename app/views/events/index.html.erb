@@ -1,33 +1,41 @@
 <div id="container">
+ <%= turbo_frame_tag "calendar" do %>
   <div id="calendar">
-    <%= month_calendar(events: @events) do |date, events| %>
-      <div class="day">
-        <div class="date"><%= date.day %></div>
-        <div class="events">
-          <% events.each do |event| %>
-            <div class="event">
-              <%= link_to event.title, event_path(event) %>
-            </div>
-          <% end %>
-        </div>
-      </div>
-    <% end %>
-  </div>
-
-  <div class="to-do">
-    <div class="to-do-header">
-      <%= link_to "➕ Add Event", new_event_path, class: "add-event-btn" %>
-    </div>
-    <div class="to-do-events">
-      <% @events.each do |event| %>  <!-- FIXED: @events not 'events' -->
+    <%= month_calendar(events: @events, attribute: :start_time, end_attribute: :end_time) do |date, events| %>
+      <div class="date"><%= date.day %></div>
+      <% events.each do |event| %>
         <div class="event">
           <%= link_to event.title, event_path(event) %>
-          <%= event.description.truncate(27)%>
-       <%= link_to "edit", edit_event_path(event) %>
-<%= link_to "delete", event_path(event), method: :delete, data: { confirm: "Are you sure?" } %>
-
         </div>
       <% end %>
-    </div>
+    <% end %>
+  </div>
+<% end %>
+
+
+ <div class="to-do card shadow-sm">
+<div class="card-header d-flex justify-content-between align-items-center">
+  <h5 class="mb-0">Upcoming Events</h5>
+
+  <%= link_to new_event_path, data: { turbo_frame: "event_form" }, class: "btn btn-primary btn-sm" do %>
+    <i class="bi bi-plus-lg"></i> Add Event
+  <% end %>
+</div>
+
+<%= turbo_frame_tag "event_form" do %>
+  <%# This is where your form will load %>
+<% end %>
+
+
+  <div class="card-body p-0">
+    <%= turbo_frame_tag "events_list" do %>
+      <div class="list-group list-group-flush">
+        <% @events.each do |event| %>
+          <%= turbo_frame_tag dom_id(event) do %>
+            <%= render partial: "event", locals: { event: event } %>
+          <% end %>
+        <% end %>
+      </div>
+    <% end %>
   </div>
 </div>

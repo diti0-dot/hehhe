@@ -1,17 +1,33 @@
-<div id="<%= dom_id preferred_email %>">
-  <p>
-    <strong>Email:</strong>
-    <%= preferred_email.email %>
-  </p>
-
-  <p>
-    <strong>Subject:</strong>
-    <%= preferred_email.subject %>
-  </p>
-
-  <p>
-    <strong>User:</strong>
-    <%= preferred_email.user_id %>
-  </p>
-
+<div class="card" style="width: 18rem;">
+  <div class="card-body">
+    <h5 class="card-title"><%= preferred_email.subject %></h5>
+    <p class="card-text"><%= preferred_email.email %></p>
+  </div>
+  
+  <% if preferred_email.events.any? %>
+    <ul class="list-group list-group-flush">
+      <% preferred_email.events.each do |event| %>
+        <li class="list-group-item">
+          <%= link_to event.title, event_path(event), class: "text-decoration-none" %>
+          <% if event.start_time.present? %>
+            <small class="text-muted ms-2">
+              (<%= event.start_time.strftime("%b %d, %Y %H:%M") %>)
+            </small>
+          <% end %>
+        </li>
+      <% end %>
+    </ul>
+  <% else %>
+    <ul class="list-group list-group-flush">
+      <li class="list-group-item text-muted fst-italic">No tasks or events assigned.</li>
+    </ul>
+  <% end %>
+  
+  <div class="card-body">
+    <div class="d-flex gap-2 mt-2">
+      <%= link_to 'Edit', edit_preferred_email_path(preferred_email), data: { turbo_frame: "preferred_email_form" }, class: "btn btn-sm btn-warning" %>
+      <%= button_to "Delete", preferred_email_path(preferred_email), method: :delete,
+          data: { confirm: "Are you sure?" }, class: "btn btn-outline-danger btn-sm" %>
+    </div>
+  </div>
 </div>

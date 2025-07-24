@@ -1,0 +1,3 @@
+<%= turbo_stream.replace dom_id(@event), partial: "events/event", locals: { event: @event } %>
+
+turbo_stream.replace("event_#{@event.id}", partial: 'events/event', locals: { event: @event }),

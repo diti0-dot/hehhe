@@ -1,68 +1,86 @@
 class EventsController < ApplicationController
+  include ActionView::RecordIdentifier
+
   before_action :authenticate_user!
+  before_action :set_event, only: [:show, :edit, :update, :destroy]
+
   def index
-     @events = current_user.all_events
+    @events = current_user.all_events
+    @event = Event.new
   end
 
   def show
-    @event = Event.find(params[:id])
   end
 
-  # GET /events/new
   def new
     @event = Event.new
   end
 
-  # GET /events/1/edit
   def edit
   end
 
-  # POST /events or /events.json
   def create
-    @event = Event.new(event_params)
-     @event.user = current_user
+    @event = current_user.events.new(event_params)
+
     respond_to do |format|
       if @event.save
-        format.html { redirect_to @event, notice: "Event was successfully created." }
-        format.json { render :show, status: :created, location: @event }
+        format.turbo_stream do
+          render turbo_stream: [
+            turbo_stream.prepend('events_list', partial: 'events/event', locals: { event: @event }),
+            turbo_stream.replace('event_form', partial: 'events/form', locals: { event: Event.new }),
+            turbo_stream.replace('calendar', partial: 'events/calendar', locals: { events: current_user.all_events })
+          ]
+        end
+        format.html { redirect_to events_path, notice: "Event was successfully created." }
       else
+        format.turbo_stream do
+          render turbo_stream: turbo_stream.replace('event_form', partial: 'events/form', locals: { event: @event })
+        end
         format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @event.errors, status: :unprocessable_entity }
       end
     end
   end
 
-  # PATCH/PUT /events/1 or /events/1.json
   def update
     respond_to do |format|
       if @event.update(event_params)
+        format.turbo_stream do
+          render turbo_stream: [
+            turbo_stream.replace("event_#{@event.id}", partial: 'events/event', locals: { event: @event }),
+            turbo_stream.replace('calendar', partial: 'events/calendar', locals: { events: current_user.all_events }),
+             turbo_stream.replace('event_form', partial: 'events/form', locals: { event: Event.new })
+          ]
+        end
         format.html { redirect_to @event, notice: "Event was successfully updated." }
-        format.json { render :show, status: :ok, location: @event }
       else
+        format.turbo_stream do
+          render turbo_stream: turbo_stream.replace(dom_id(@event), partial: 'events/form', locals: { event: @event })
+        end
         format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @event.errors, status: :unprocessable_entity }
       end
     end
   end
 
-  # DELETE /events/1 or /events/1.json
   def destroy
-    @event.destroy!
-
+    @event.destroy
     respond_to do |format|
-      format.html { redirect_to events_path, status: :see_other, notice: "Event was successfully destroyed." }
-      format.json { head :no_content }
+      format.turbo_stream do
+        render turbo_stream: [
+          turbo_stream.remove(dom_id(@event)),
+          turbo_stream.replace('calendar', partial: 'events/calendar', locals: { events: current_user.all_events })
+        ]
+      end
+      format.html { redirect_to events_url, notice: "Event was successfully destroyed." }
     end
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_event
-      @event = Event.find(params.expect(:id))
-    end
 
-    # Only allow a list of trusted parameters through.
-    def event_params
-      params.expect(event: [ :title, :description, :start_time, :end_time ])
-    end
+  def set_event
+    @event = current_user.events.find(params[:id])
+  end
+
+  def event_params
+    params.require(:event).permit(:title, :description, :start_time, :end_time)
+  end
 end

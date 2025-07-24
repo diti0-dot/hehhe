@@ -1,0 +1,10 @@
+<div id="calendar">
+  <%= month_calendar(events: events, attribute: :start_time, end_attribute: :end_time) do |date, events| %>
+    <div class="date"><%= date.day %></div>
+    <% events.each do |event| %>
+      <div class="event">
+        <%= link_to event.title, event_path(event) %>
+      </div>
+    <% end %>
+  <% end %>
+</div>

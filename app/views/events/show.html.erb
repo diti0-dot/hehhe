@@ -1,10 +1,39 @@
-<p style="color: green"><%= notice %></p>
-
-<%= render @event %>
-
-<div>
-  <%= link_to "Edit this event", edit_event_path(@event) %> |
-  <%= link_to "Back to events", events_path %>
-
-  <%= button_to "Destroy this event", @event, method: :delete %>
+<div class="container mt-4">
+  <div class="card shadow-sm">
+    <div class="card-header">
+      <div class="d-flex justify-content-between align-items-center">
+        <h2 class="mb-0"><%= @event.title %></h2>
+        <div class="btn-group">
+          <%= link_to edit_event_path(@event), class: "btn btn-outline-secondary", data: { turbo_frame: "modal" } do %>
+            <i class="bi bi-pencil"></i> Edit
+          <% end %>
+          <%= link_to @event, method: :delete, 
+                class: "btn btn-outline-danger", 
+                data: { turbo_method: :delete, turbo_confirm: "Are you sure?" } do %>
+            <i class="bi bi-trash"></i> Delete
+          <% end %>
+        </div>
+      </div>
+    </div>
+    
+    <div class="card-body">
+      <div class="mb-4">
+        <h5 class="text-muted">Description</h5>
+        <p><%= @event.description %></p>
+      </div>
+      
+      <div class="row">
+        <div class="col-md-6">
+          <h5 class="text-muted">Start Time</h5>
+          <p><%= @event.start_time.to_formatted_s(:long) if @event.start_time %></p>
+        </div>
+        <div class="col-md-6">
+          <h5 class="text-muted">End Time</h5>
+          <p><%= @event.end_time.to_formatted_s(:long) if @event.end_time %></p>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <%= link_to 'Back to Events', events_path, class: "btn btn-outline-primary mt-3" %>
 </div>

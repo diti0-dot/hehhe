@@ -1,0 +1,7 @@
+<%= turbo_stream.replace(@preferred_email) do %>
+  <%= render partial: "preferred_emails/preferred_email", locals: { preferred_email: @preferred_email } %>
+<% end %>
+
+<%= turbo_stream.replace("preferred_email_form") do %>
+  <%= render partial: "preferred_emails/form", locals: { preferred_email: PreferredEmail.new } %>
+<% end %>

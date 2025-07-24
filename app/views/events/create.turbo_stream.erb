@@ -1,0 +1,2 @@
+<%= turbo_stream.append "events_list", partial: "events/event", locals: { event: @event } %>
+<%= turbo_stream.replace "event_form", partial: "events/form", locals: { event: Event.new } %>
