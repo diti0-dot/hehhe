@@ -11,17 +11,40 @@
       <%= f.label :description %>
       <%= f.text_area :description, class: "form-control" %>
     </div>
+    
+      <% if @event.errors.any? %>
+        <div class="error-messages">
+          <h3><%= pluralize(@event.errors.count, "error") %> prevented this event from being saved:</h3>
+          <ul>
+            <% @event.errors.full_messages.each do |msg| %>
+              <li><%= msg %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+
 
     <!-- start_time -->
-    <div class="mb-3">
-      <%= f.label :start_time %>
-      <%= f.datetime_select :start_time, class: "form-control" %>
+     <div class="row mb-3">
+      <div class="col-md-6">
+        <%= f.label :start_time, class: "form-label" %>
+        <%= f.datetime_local_field :start_time, class: "form-control" %>
+      </div>
+      <div class="col-md-6">
+        <%= f.label :end_time, class: "form-label" %>
+        <%= f.datetime_local_field :end_time, class: "form-control" %>
+      </div>
     </div>
 
-    <!-- end_time -->
-    <div class="mb-3">
-      <%= f.label :end_time %>
-      <%= f.datetime_select :end_time, class: "form-control" %>
+     <div class="mb-3">
+      <%= f.label :preferred_email_id, "Preferred Email", class: "form-label" %>
+      <%= f.collection_select :preferred_email_id,
+            current_user.preferred_emails,
+            :id,
+            :email,
+            { include_blank: true },
+            { class: "form-select" } %>
     </div>
 
     <%= f.submit (event.persisted? ? "Update" : "Create"), class: "btn btn-success" %>
