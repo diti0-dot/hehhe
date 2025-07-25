@@ -13,7 +13,7 @@ class GmailService
     @service.get_user_profile(user_id)
   end
 
-  def watch(user_id = 'me', watch_request)
+  def watch_user(user_id = 'me', watch_request)
     @service.watch_user(user_id, watch_request)
   end
 

@@ -12,7 +12,7 @@ class GmailWatchJob < ApplicationJob
     service = GmailService.new(user)
     
     watch_request = Google::Apis::GmailV1::WatchRequest.new(
-      topic_name: "projects/#{ENV['GOOGLE_CLOUD_PROJECT']}/topics/gmail-notifications",
+      topic_name: "projects/#{ENV['GOOGLE_CLOUD_PROJECT']}/topics/gmail-message-triggers",
       label_ids: ['INBOX'],
       label_filter_action: 'include'
     )

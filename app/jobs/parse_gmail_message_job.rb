@@ -7,7 +7,16 @@ class ParseGmailMessageJob < ApplicationJob
 
   def perform(user_id:, message_id:, sender:, subject:, body:, preferred_sender_id:)
     user = User.find(user_id)
-    body = CGI.unescapeHTML(body)
+    
+    # Ensure body is properly encoded before processing
+    body = if body.encoding == Encoding::ASCII_8BIT
+             body.force_encoding('UTF-8').scrub('')
+           else
+             body.encode('UTF-8', invalid: :replace, undef: :replace)
+           end
+
+    # Remove any remaining invalid characters
+    body = CGI.unescapeHTML(body).scrub('')
 
     prompt = <<~PROMPT
       Analyze this email for academic events and respond with ONLY this JSON format:
@@ -66,44 +75,55 @@ class ParseGmailMessageJob < ApplicationJob
     end
 
     content = response.dig("choices", 0, "message", "content")
+    Rails.logger.info "Raw AI response content: #{content.inspect}"
     return if content.nil?
 
     # Parse and validate response JSON
-    begin
-      json_content = content.gsub(/^```(json)?|```$/, '').strip
-      parsed = JSON.parse(json_content)
-      event_data = parsed["event"] || parsed
+   # In ParseGmailMessageJob
 
-      unless event_data["event_worthy"] && event_data["title"].present? && event_data["start_time"].present?
-        Rails.logger.error "Missing fields: #{parsed}"
-        return
-      end
+# ... existing code ...
 
-      end_time = event_data["end_time"] ||
-                 (Time.parse(event_data["start_time"]) + 30.minutes).iso8601
+begin
+  json_content = content.gsub(/^```(json)?|```$/, '').strip
+  parsed = JSON.parse(json_content)
+  Rails.logger.info "Parsed AI response JSON: #{parsed.inspect}"
+  event_data = parsed["event"] || parsed
 
-      Event.create!(
-        user_id: user.id,
-        preferred_email_id: preferred_sender_id,
-        title: event_data["title"],
-        description: event_data["description"],
-        start_time: event_data["start_time"],
-        end_time: end_time
-      )
+  unless event_data["event_worthy"] && event_data["title"].present? && event_data["start_time"].present?
+    Rails.logger.error "Missing fields: #{parsed}"
+    return
+  end
 
-      Rails.logger.info "Event created: #{event_data["title"]} at #{event_data["start_time"]}"
+  # Improved date handling for due dates
+  start_time = Time.parse(event_data["start_time"])
+  
+  # If the title contains "due" or "deadline", treat as due date ending at 11:59 PM
+  if event_data["title"].downcase.include?("due") || event_data["title"].downcase.include?("deadline") || 
+     (event_data["description"] && (event_data["description"].downcase.include?("due") || event_data["description"].downcase.include?("deadline")))
+    
+    end_time = start_time.end_of_day
+  else
+    # Default behavior for regular events
+    end_time = event_data["end_time"] || (start_time + 30.minutes)
+  end
 
-    rescue JSON::ParserError => e
-      Rails.logger.error "Invalid JSON: #{content}"
-      Rails.logger.error "Error: #{e.message}"
+  Event.create!(
+    user_id: user.id,
+    preferred_email_id: preferred_sender_id,
+    title: event_data["title"],
+    description: event_data["description"],
+    start_time: start_time,
+    end_time: end_time
+  )
+
+  Rails.logger.info "Event created: #{event_data["title"]} at #{start_time} to #{end_time}"
+
+rescue JSON::ParserError => e
+  Rails.logger.error "Invalid JSON: #{content}"
+  Rails.logger.error "Error: #{e.message}"
+
+    rescue => e
+      Rails.logger.error "Error processing event: #{e.message}"
     end
-
-  rescue HTTParty::Error => e
-    Rails.logger.error "HTTP error: #{e.message}"
-    retry_job(wait: 5.minutes) if e.message.include?("429")
-
-  rescue => e
-    Rails.logger.error "Error: #{e.message}"
-    Rails.logger.error e.backtrace.join("\n")
   end
 end
