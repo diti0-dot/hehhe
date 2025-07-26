@@ -8,7 +8,7 @@ class ParseGmailMessageJob < ApplicationJob
   def perform(user_id:, message_id:, sender:, subject:, body:, preferred_sender_id:)
     user = User.find(user_id)
     
-    # Ensure body is properly encoded before processing
+  
     body = if body.encoding == Encoding::ASCII_8BIT
              body.force_encoding('UTF-8').scrub('')
            else
@@ -68,7 +68,6 @@ class ParseGmailMessageJob < ApplicationJob
       timeout: 30
     )
 
-    # Handle error responses
     unless response.success?
       Rails.logger.error "OpenRouter API failed: #{response.code} - #{response.body}"
       return
@@ -78,10 +77,6 @@ class ParseGmailMessageJob < ApplicationJob
     Rails.logger.info "Raw AI response content: #{content.inspect}"
     return if content.nil?
 
-    # Parse and validate response JSON
-   # In ParseGmailMessageJob
-
-# ... existing code ...
 
 begin
   json_content = content.gsub(/^```(json)?|```$/, '').strip
@@ -94,16 +89,14 @@ begin
     return
   end
 
-  # Improved date handling for due dates
+ 
   start_time = Time.parse(event_data["start_time"])
   
-  # If the title contains "due" or "deadline", treat as due date ending at 11:59 PM
   if event_data["title"].downcase.include?("due") || event_data["title"].downcase.include?("deadline") || 
      (event_data["description"] && (event_data["description"].downcase.include?("due") || event_data["description"].downcase.include?("deadline")))
     
     end_time = start_time.end_of_day
   else
-    # Default behavior for regular events
     end_time = event_data["end_time"] || (start_time + 30.minutes)
   end
 
