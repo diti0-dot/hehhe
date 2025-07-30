@@ -5,6 +5,7 @@ Rails.application.routes.draw do
     omniauth_callbacks: "users/omniauth_callbacks"
   }
   get '/privacy', to: 'pages#privacy'
+  get '/homepage', to: 'pages#homepage'
   resources :events
   resources :preferred_emails
   post '/webhooks/gmail_notification', to: 'webhooks#gmail_notification'
