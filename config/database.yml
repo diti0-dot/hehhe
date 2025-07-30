@@ -12,10 +12,8 @@ test:
   database: bro1_test
   
 production:
-  adapter: postgresql
-  encoding: unicode
   url: <%= ENV['DATABASE_URL'] %>
-  pool: 5
+
 
 
 cable:
