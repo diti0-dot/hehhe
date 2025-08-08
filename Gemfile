@@ -75,7 +75,7 @@ gem "simple_calendar", "~> 3.1"
 
 gem "httparty", "~> 0.23.1"
 
-gem "openai", "~> 0.11.0"
+gem "openai", "~> 0.17.0"
 gem 'google-api-client'
 
 gem 'rails_12factor', group: :production
